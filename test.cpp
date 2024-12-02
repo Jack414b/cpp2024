@@ -4,47 +4,26 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-const int SIZE = 100;
+int function(int a, int b){
+    return a + b;
+}
 
-class Stack{
-    int top;
-    int buffer[SIZE];
-    //int x = 0;
+class Adaptor {
+    typedef int (* FuncPtr)(int a, int b);
+    FuncPtr _ptr;
+    int _param;
 public:
-    Stack() : top(-1){}
+    Adaptor(FuncPtr p, int pa) : _ptr(p), _param(pa) {};
 
-    bool push(int i){
-        if(top >= SIZE - 1){
-            cout << "overFlow!" << endl;
-            return false;
-        }
-        buffer[++top] = i;
-        return true;
+    int operator ()(int b) {
+        return _ptr(_param,b);
     }
-
-    bool pop(int &i){
-        if(top < 0){
-            cout << "underflow!" << endl;
-            return false;
-        }
-        i = buffer[top--];
-        return true;
-    }
-
-    ~Stack(){}
 };
 
 int main(){
-    Stack obj;
-
-    for(int i = 0; i < 5; i++){
-        obj.push(i);
-    }
-
-    int value;
-    while(obj.pop(value)){
-        cout << "Popped value:" << value << endl;
-    }
+    Adaptor adaptor(function, 3);
+    cout << adaptor(4) << endl;
+    cout << function(3, 4) << endl;
     return 0;
 }
 
